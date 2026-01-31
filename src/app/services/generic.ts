@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ResultModel } from '../models/result.model';
 import { ErrorService } from './error';
-import { environment } from '../environment/environment';
+import { environment } from '../environments/environment';
 
 
 @Injectable({
