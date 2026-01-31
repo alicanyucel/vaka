@@ -1,6 +1,6 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import { SwalService } from './swal.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SwalService } from './swal';
 
 @Injectable({
   providedIn: 'root'

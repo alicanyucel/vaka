@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { TokenModel } from '../Models/token.model';
+import { TokenModel } from '../models/token.model';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 
 @Injectable({
