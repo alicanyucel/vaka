@@ -2,7 +2,6 @@
 import { Routes } from '@angular/router';
 import { NotFound } from './components/not-found/not-found';
 import { Layout } from './components/layout/layout';
-import { Device } from './components/device/device';
 
 export const routes: Routes = [
 	{
@@ -10,7 +9,7 @@ export const routes: Routes = [
 		component: Layout,
 		children: [
 			{ path: '', redirectTo: 'devices', pathMatch: 'full' },
-			{ path: 'devices', component: Device },
+			{ path: 'devices', loadComponent: () => import('./components/device/device').then(m => m.Device) },
 		]
 	},
 	{ path: '**', component: NotFound },
