@@ -89,10 +89,8 @@ export class AddDevice implements OnInit {
         this.deviceAdded.emit(device);
         this.showModal = false;
         this.addDeviceForm.reset();
-        this.signalRService.sendDeviceAdded(device);
-        setTimeout(() => {
-          location.reload();
-        }, 500);
+        // SignalR invoke opsiyonel; backend hub metodu yoksa hata üretebilir.
+        // this.signalRService.sendDeviceAdded(device);
       } else {
         console.log('İsSuccessful false, hata mesajı:', res);
         Swal.fire('Hata!', 'Cihaz eklenirken hata oluştu.', 'error');

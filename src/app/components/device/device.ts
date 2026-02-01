@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { DeviceModel } from '../../models/device.model';
@@ -27,10 +27,12 @@ export class Device implements OnInit, OnDestroy {
   constructor(
     private genericService: GenericService,
     private cdr: ChangeDetectorRef,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.getDevices();
     this.setupSignalRListeners();
   }
@@ -96,8 +98,8 @@ export class Device implements OnInit, OnDestroy {
 
   getDevices() {
     this.genericService.post<DeviceModel[]>('/api/Devices/GetAll', {}, (res) => {
-      if (res.isSuccessful && res.data) {
-        this.allDevices = res.data;
+      if (res.isSuccessful !== false) {
+        this.allDevices = (res.data as any) ?? [];
         this.applyFilter();
       }
     });
@@ -112,18 +114,13 @@ export class Device implements OnInit, OnDestroy {
   }
 
   onDeviceAdded(device: DeviceModel) {
-    this.allDevices.push(device);
-    this.applyFilter();
+    console.log('onDeviceAdded çağırıldı:', device);
+    this.getDevices();
   }
 
   onDeviceUpdated(updatedDevice: DeviceModel) {
-    const index = this.allDevices.findIndex((d) => d.id === updatedDevice.id);
-    if (index !== -1) {
-      this.allDevices[index] = updatedDevice;
-    } else {
-      this.allDevices.push(updatedDevice);
-    }
-    this.applyFilter();
+    console.log('onDeviceUpdated çağırıldı:', updatedDevice);
+    this.getDevices();
   }
 
   deleteDevice(id: string) {
@@ -141,12 +138,18 @@ export class Device implements OnInit, OnDestroy {
     }).then((result) => {
       if (!result.isConfirmed) return;
 
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        Swal.fire('Hata!', 'İnternet bağlantısı yok / tarayıcı offline modda.', 'error');
+        return;
+      }
+
       this.genericService.post('/api/Devices/Delete', { id }, (res) => {
         console.log('Delete response:', res);
         if (res.isSuccessful !== false) {
           Swal.fire('Başarılı!', 'Cihaz silindi.', 'success');
           this.getDevices();
-          this.signalRService.sendDeviceDeleted(id);
+          // SignalR invoke opsiyonel; backend hub metodu yoksa hata üretebilir.
+          // this.signalRService.sendDeviceDeleted(id);
         } else {
           Swal.fire('Hata!', 'Cihaz silinirken hata oluştu.', 'error');
         }
@@ -158,6 +161,18 @@ export class Device implements OnInit, OnDestroy {
         }
 
         console.error('Silme hatası:', err);
+        if (err.status === 0) {
+          const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+          Swal.fire(
+            'Hata!',
+            isOnline
+              ? 'API\'ye bağlanılamadı. (Sertifika/Proxy/CORS veya tarayıcı offline modu olabilir)'
+              : 'İnternet bağlantısı yok / tarayıcı offline modda.',
+            'error'
+          );
+          return;
+        }
+
         Swal.fire('Hata!', 'İşlem başarısız oldu.', 'error');
       });
     });

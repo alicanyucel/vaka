@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 
@@ -12,8 +13,10 @@ export class SignalRService {
   public deviceUpdated$ = new Subject<any>();
   public isConnected: boolean = false;
 
-  constructor() {
-    this.startConnection();
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.startConnection();
+    }
   }
 
   private startConnection() {

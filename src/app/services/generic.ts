@@ -14,8 +14,9 @@ export class GenericService {
   post<T>(apiUrl: string, body: any, callBack: (res: ResultModel<T>) => void, errorCallback?: (err: HttpErrorResponse) => void) {
     const url = `${environment.baseApi}${apiUrl}`;
     console.log('POST request to:', url);
-    this.http.post<ResultModel<T>>(url, body).subscribe({
-      next: (res => {
+    this.http.post<any>(url, body).subscribe({
+      next: (raw => {
+        const res = this.normalizeResult<T>(raw);
         console.log('Response received:', res);
         callBack(res);
       }),
@@ -27,5 +28,20 @@ export class GenericService {
         }
       }
     });
+  }
+
+  private normalizeResult<T>(raw: any): ResultModel<T> {
+    const normalized: ResultModel<T> = {
+      data: raw?.data ?? raw?.Data ?? null,
+      errorMessages: raw?.errorMessages ?? raw?.ErrorMessages ?? [],
+      isSuccessful: (raw?.isSuccessful ?? raw?.IsSuccessful) as any,
+      statusCode: raw?.statusCode ?? raw?.StatusCode ?? 200,
+    } as ResultModel<T>;
+
+    if (normalized.isSuccessful === undefined || normalized.isSuccessful === null) {
+      normalized.isSuccessful = true;
+    }
+
+    return normalized;
   }
 }

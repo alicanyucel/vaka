@@ -84,10 +84,8 @@ export class UpdateDevice {
         this.deviceUpdated.emit(updated);
         this.showModal = false;
         this.updateDeviceForm.reset();
-        this.signalRService.sendDeviceUpdated(updated);
-        setTimeout(() => {
-          location.reload();
-        }, 500);
+        // SignalR invoke opsiyonel; backend hub metodu yoksa hata üretebilir.
+        // this.signalRService.sendDeviceUpdated(updated);
       } else {
         Swal.fire('Hata!', 'Cihaz güncellenirken hata oluştu.', 'error');
       }
