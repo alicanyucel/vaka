@@ -10,8 +10,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    // Fetch backend'i bazı ortamlarda status 0 / "disconnected" hatalarını tetikleyebiliyor.
-    // Default XHR backend daha stabil.
     provideHttpClient()
   ]
 };

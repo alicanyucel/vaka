@@ -148,13 +148,12 @@ export class Device implements OnInit, OnDestroy {
         if (res.isSuccessful !== false) {
           Swal.fire('Başarılı!', 'Cihaz silindi.', 'success');
           this.getDevices();
-          // SignalR invoke opsiyonel; backend hub metodu yoksa hata üretebilir.
-          // this.signalRService.sendDeviceDeleted(id);
+         
+        
         } else {
           Swal.fire('Hata!', 'Cihaz silinirken hata oluştu.', 'error');
         }
       }, (err) => {
-        // Success status'u varsa hata alert gösterme (zaten success alert gösterildi)
         if (err.status >= 200 && err.status < 300) {
           console.log('Success status (' + err.status + '), error callback gereksiz');
           return;

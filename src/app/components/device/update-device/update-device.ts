@@ -84,13 +84,10 @@ export class UpdateDevice {
         this.deviceUpdated.emit(updated);
         this.showModal = false;
         this.updateDeviceForm.reset();
-        // SignalR invoke opsiyonel; backend hub metodu yoksa hata üretebilir.
-        // this.signalRService.sendDeviceUpdated(updated);
       } else {
         Swal.fire('Hata!', 'Cihaz güncellenirken hata oluştu.', 'error');
       }
     }, (err) => {
-      // Error callback gereken durumlarda hata göster
       if (err.status >= 200 && err.status < 300) {
         console.log('Success status (' + err.status + '), error callback gereksiz');
         return;

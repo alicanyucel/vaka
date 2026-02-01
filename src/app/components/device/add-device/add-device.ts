@@ -89,21 +89,18 @@ export class AddDevice implements OnInit {
         this.deviceAdded.emit(device);
         this.showModal = false;
         this.addDeviceForm.reset();
-        // SignalR invoke opsiyonel; backend hub metodu yoksa hata üretebilir.
-        // this.signalRService.sendDeviceAdded(device);
+
       } else {
         console.log('İsSuccessful false, hata mesajı:', res);
         Swal.fire('Hata!', 'Cihaz eklenirken hata oluştu.', 'error');
       }
     }, (err) => {
-      // Error callback'i genelde başarılı işlemler için de tetiklenir
-      // Status 200-299 ise hata mesajı gösterme (zaten success alert gösterildi)
+
       if (err.status >= 200 && err.status < 300) {
         console.log('Success status (' + err.status + '), error callback gereksiz');
         return;
       }
 
-      // Gerçek hata ise mesaj göster
       console.error('Gerçek hata:', err);
       const errorMsg = err.error?.errors ? JSON.stringify(err.error.errors) : 'Bilinmeyen hata';
       Swal.fire('Hata!', `API Hatası: ${errorMsg}`, 'error');
