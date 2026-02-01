@@ -1,1 +1,69 @@
-<p>update-device works!</p>
+<!-- Modal -->
+<div class="modal" [ngClass]="{'show': showModal}" [style.display]="showModal ? 'block' : 'none'" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Cihazı Güncelle</h5>
+				<button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="updateDeviceForm">
+					<div class="mb-3">
+						<label for="id" class="form-label">ID:</label>
+						<input id="id" type="text" formControlName="id" class="form-control" [disabled]="true" />
+					</div>
+
+					<div class="mb-3">
+						<label for="name" class="form-label">Ad:</label>
+						<input id="name" type="text" formControlName="name" class="form-control" />
+						<small class="text-danger" *ngIf="updateDeviceForm.get('name')?.invalid && updateDeviceForm.get('name')?.touched">
+							Ad zorunludur
+						</small>
+					</div>
+
+					<div class="mb-3">
+						<label for="serialNumber" class="form-label">Seri No:</label>
+						<input id="serialNumber" type="text" formControlName="serialNumber" class="form-control" />
+						<small class="text-danger" *ngIf="updateDeviceForm.get('serialNumber')?.invalid && updateDeviceForm.get('serialNumber')?.touched">
+							Seri No zorunludur
+						</small>
+					</div>
+
+					<div class="mb-3 form-check">
+						<input id="isActive" type="checkbox" formControlName="isActive" class="form-check-input" />
+						<label for="isActive" class="form-check-label">Aktif</label>
+					</div>
+
+					<div class="mb-3">
+						<label for="lastMaintenanceDate" class="form-label">Son Bakım Tarihi:</label>
+						<div class="input-group">
+							<input
+								id="lastMaintenanceDate"
+								type="text"
+								class="form-control"
+								formControlName="lastMaintenanceDate"
+								ngbDatepicker
+								#d="ngbDatepicker"
+								placeholder="Tarih Seçin"
+								readonly />
+							<button class="btn btn-outline-secondary" type="button" (click)="d.toggle()">
+								<i class="fa fa-calendar"></i>
+							</button>
+						</div>
+					</div>
+
+					<div class="mb-3 form-check">
+						<input id="isDeleted" type="checkbox" formControlName="isDeleted" class="form-check-input" />
+						<label for="isDeleted" class="form-check-label">Silindi</label>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" (click)="closeUpdateModal()">İptal</button>
+				<button type="button" class="btn btn-warning" (click)="submitUpdateDevice()"><i class="fa fa-save"></i> Kaydet</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal-backdrop fade" [ngClass]="{'show': showModal}" *ngIf="showModal"></div>

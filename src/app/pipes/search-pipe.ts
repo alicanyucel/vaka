@@ -8,14 +8,24 @@ import { DeviceModel } from '../models/device.model';
 export class SearchPipe implements PipeTransform {
 
   transform(value: DeviceModel[], search: string): DeviceModel[] {
-    if (!value || !search) {
+    const query = (search ?? '').trim();
+    if (!value || !query) {
       return value;
     }
-    const lowerSearch = search.toLowerCase();
-    return value.filter(device => {
-      return Object.values(device).some(val =>
-        val && typeof val === 'string' && val.toLowerCase().includes(lowerSearch)
-      );
+
+    const lowerQuery = query.toLocaleLowerCase('tr-TR');
+
+    return value.filter((device) => {
+      const searchableValues: Array<string> = [
+        device.id,
+        device.name,
+        device.serialNumber,
+        device.lastMaintenanceDate,
+        device.isActive ? 'aktif' : 'pasif',
+        device.isDeleted ? 'silindi' : 'silinmedi',
+      ].filter((v): v is string => typeof v === 'string' && v.length > 0);
+
+      return searchableValues.some((v) => v.toLocaleLowerCase('tr-TR').includes(lowerQuery));
     });
   }
 }
