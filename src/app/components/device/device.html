@@ -3,6 +3,7 @@
 	<div class="row mb-4">
 		<div class="col-md-6">
 			<input type="text" [(ngModel)]="search" placeholder="Ara..." class="form-control" />
+			<button class="btn btn-primary btn-sm mt-2 w-100"><i class="fa fa-plus"></i> Yeni Cihaz Ekle</button>
 		</div>
 	</div>
 
@@ -20,14 +21,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let device of devices | search:search">
+					<tr *ngFor="let device of devices">
 						<td>{{device.id}}</td>
 						<td>{{device.name}}</td>
-						<td>{{device.seriNo}}</td>
-						<td><span class="badge" [ngClass]="device.durum ? 'bg-success' : 'bg-danger'">{{device.durum ? 'Aktif' : 'Pasif'}}</span></td>
-						<td>{{device.sonbakimTarihi}}</td>
+						<td>{{device.serialNumber}}</td>
+						<td><span class="badge" [ngClass]="device.isActive ? 'bg-success' : 'bg-danger'">{{device.isActive ? 'Aktif' : 'Pasif'}}</span></td>
+						<td>{{device.lastMaintenanceDate | monthName}}</td>
 						<td>
-							<button (click)="updateDevice(device)" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i> Güncelle</button>
+							<button (click)="updateDevice(device)" class="btn btn-sm btn-warning me-1"><i class="fa fa-pencil"></i> Güncelle</button>
 							<button (click)="deleteDevice(device.id)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Sil</button>
 						</td>
 					</tr>

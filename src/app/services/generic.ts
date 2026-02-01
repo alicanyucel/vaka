@@ -12,11 +12,15 @@ export class GenericService {
   constructor(
     private http: HttpClient,private error:ErrorService) { }
   post<T>(apiUrl: string, body: any, callBack: (res: ResultModel<T>) => void, errorCallback?: (err: HttpErrorResponse) => void) {
-    this.http.post<ResultModel<T>>(`${environment.baseApi}${apiUrl}`, body).subscribe({
+    const url = `${environment.baseApi}${apiUrl}`;
+    console.log('POST request to:', url);
+    this.http.post<ResultModel<T>>(url, body).subscribe({
       next: (res => {
+        console.log('Response received:', res);
         callBack(res);
       }),
       error: (err: HttpErrorResponse) => {
+        console.error('Error:', err);
         this.error.errorHandler(err);
         if (errorCallback !== undefined) {
           errorCallback(err);

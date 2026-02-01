@@ -1,6 +1,6 @@
 export class ResultModel<T>{
 data:any;
 errorMessages?:string[]
-isSuccesful:boolean=true;
+isSuccessful:boolean=true;
 statusCode:number=200;
 }
